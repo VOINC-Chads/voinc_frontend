@@ -2,11 +2,19 @@
 
 import React, { useState } from 'react';
 import AceEditor from 'react-ace';
+import { w3cwebsocket as W3CWebSocket } from "websocket";
 import './App.css';
 import 'ace-builds/src-noconflict/mode-python';
 import 'ace-builds/src-noconflict/theme-github';
 import 'ace-builds/src-noconflict/theme-monokai';
 import "ace-builds/src-noconflict/ext-language_tools"
+
+let websocket = new W3CWebSocket(`ws://localhost:8080/start-session`)
+
+websocket.onmessage = function(event) {
+  const msg = JSON.parse(event.data)
+  console.log(msg)
+}
 
 function App() {
   var starter = `def map_function(data):
@@ -23,13 +31,17 @@ function App() {
   const [reduceCode, setReduceCode] = useState(reduceStarter);
   const [output, setOutput] = useState('');
   const runCode = async () => {
-    const response = await fetch('/run-python', {
+    websocket.send(JSON.stringify({ 
+      "mapCode": mapCode,
+      "reduceCode": reduceCode
+    }))
+    /*const response = await fetch('/run-python', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ mapCode, reduceCode })
     });
     const result = await response.json();
-    setOutput(result.output);
+    setOutput(result.output);*/
   };
 
   return (
