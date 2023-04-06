@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import AceEditor from 'react-ace';
 import { w3cwebsocket as W3CWebSocket } from "websocket";
+import toast, { Toaster } from 'react-hot-toast';
 import './App.css';
 import 'ace-builds/src-noconflict/mode-python';
 import 'ace-builds/src-noconflict/theme-github';
@@ -11,9 +12,13 @@ import "ace-builds/src-noconflict/ext-language_tools"
 
 let websocket = new W3CWebSocket(`ws://localhost:8080/start-session`)
 
-websocket.onmessage = function(event) {
+websocket.onmessage = function (event) {
   const msg = JSON.parse(event.data)
-  console.log(msg)
+  if (msg.status === "ERROR"){
+    toast.error(msg.content)
+  }else{
+    toast.success(msg.content)
+  }
 }
 
 function App() {
@@ -27,14 +32,19 @@ function App() {
   for key, value in intermediate.items():
     reduce_to_final(key, value)
   `
+  const send_backend = async (data) => {
+    websocket.send(JSON.stringify(data))
+  }
   const [mapCode, setMapCode] = useState(starter);
   const [reduceCode, setReduceCode] = useState(reduceStarter);
   const [output, setOutput] = useState('');
   const runCode = async () => {
-    websocket.send(JSON.stringify({ 
+    
+    send_backend(JSON.stringify({
       "mapCode": mapCode,
       "reduceCode": reduceCode
     }))
+    toast('Code sent to backend for processing ✈️')
     /*const response = await fetch('/run-python', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -46,9 +56,13 @@ function App() {
 
   return (
     <div className="container vh-100">
+      <Toaster
+        position="bottom-left"
+        reverseOrder={false}
+      />
       <div>
         <h1 className='d-flex text-dark font-monospace justify-content-center mt-5 mb-3 aligned-content-center'>VOINC EDITOR</h1>
-        <div  className='row'>
+        <div className='row'>
           <h3 className='col-6 d-flex text-muted font-monospace justify-content-center'>Map Section</h3>
           <h3 className='col-6 d-flex text-muted font-monospace justify-content-center'>Reduce Section</h3>
         </div>
@@ -75,7 +89,7 @@ function App() {
           }}
           className='mr-2'
         />
-         <AceEditor
+        <AceEditor
           mode="python"
           theme="monokai"
           value={reduceCode}
@@ -97,7 +111,7 @@ function App() {
           className='ml-2'
 
         />
-      
+
       </div>
       <div className='d-flex justify-content-center p-4 aligned-self-center'>
         <button className='btn btn-success px-5 py-2' onClick={runCode}>SEND CODE TO EXECUTE</button>
