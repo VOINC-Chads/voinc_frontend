@@ -6,7 +6,13 @@ import { websocket, send_backend } from './websocket'
 
 
 export default function InputForm() {
-    var inputStarter = `[1,[2,3],[342]]`
+    var inputStarter = `Flask==1.1.2
+    jinja2==2.11.2
+    markupsafe==1.1.1
+    itsdangerous==1.1.0
+    Werkzeug==1.0.1
+    Flask-Cors==3.0.10
+    `
 
     const [input, setInput] = useState(inputStarter); // [1,[2,3],[342]]
     const runCode = async () => {
@@ -21,7 +27,7 @@ export default function InputForm() {
         <div className='container d-flex justify-content-center p-5'>
             <h3 className='d-flex text-muted font-monospace justify-content-center mt-5 mb-3 aligned-content-center px-5'>INPUT</h3>
 
-            
+
             <AceEditor
                 mode="python"
                 theme="monokai"
@@ -44,7 +50,7 @@ export default function InputForm() {
                 }}
                 className='mr-2'
             />
-            <button className='btn btn-success p-5' onClick={runCode}>RUN WITH INPUT</button>
+            <button className='btn btn-success p-5' onClick={runCode}>SEND INPUT</button>
 
         </div>
     )
