@@ -31,7 +31,7 @@ export default function InputForm() {
             <AceEditor
                 mode="python"
                 theme="monokai"
-                value={inputStarter}
+                //value={inputStarter}
                 onChange={(value) => setInput(value)}
                 name="editor"
                 editorProps={{ $blockScrolling: true }}
