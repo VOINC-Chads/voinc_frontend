@@ -51,7 +51,7 @@ function App() {
 
     send_backend(JSON.stringify({
       "type": 0,
-      "code": JSON.stringify(code)
+      "code": code
     }))
     toast('Code sent to backend for processing ✈️')
 

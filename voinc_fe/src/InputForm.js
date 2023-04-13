@@ -11,11 +11,13 @@ export default function InputForm() {
     const [input, setInput] = useState(inputStarter); // [1,[2,3],[342]]
     const runCode = async () => {
 
+        var job = {
+            "jobs": JSON.parse(input).map(item => item.toString())
+        }
+
         send_backend(JSON.stringify({
             "type": 1,
-            "job": {
-                "jobs": JSON.stringify(JSON.parse(input).map(item => item.toString()))
-            }
+            "job": job
         }))
         toast('Input sent to be executed 🔄')
         console.log(input)
