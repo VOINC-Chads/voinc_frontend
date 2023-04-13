@@ -6,15 +6,19 @@ import { websocket, send_backend } from './websocket'
 
 
 export default function InputForm() {
-    var inputStarter = `[1,[2,3],[342]]`
+    var inputStarter = `[1, 2]`
 
     const [input, setInput] = useState(inputStarter); // [1,[2,3],[342]]
     const runCode = async () => {
 
         send_backend(JSON.stringify({
-            "input": input
+            "type": 1,
+            "job": {
+                "jobs": JSON.stringify(JSON.parse(input).map(item => item.toString()))
+            }
         }))
         toast('Input sent to be executed 🔄')
+        console.log(input)
 
     };
     return (

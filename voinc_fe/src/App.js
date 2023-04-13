@@ -43,10 +43,15 @@ function App() {
   const [show_input, setShowInput] = useState(false);
   const runCode = async () => {
 
+    var code = {
+        "processCode": processCode,
+        "executeCode": executeCode,
+        "requirements": requiremnent,
+    }
+
     send_backend(JSON.stringify({
-      "processCode": processCode,
-      "executeCode": executeCode,
-      "requirement": requiremnent,
+      "type": 0,
+      "code": JSON.stringify(code)
     }))
     toast('Code sent to backend for processing ✈️')
 
@@ -60,7 +65,7 @@ function App() {
       />
       <h1 className='d-flex text-dark font-monospace justify-content-center mt-5 mb-3 aligned-content-center'>VOINC EDITOR</h1>
       <button className='btn btn-primary' onClick={() => { setShowInput(!show_input) }}> {!show_input ? "Change Input" : "Hide Prompt"}</button>
-      <button className='btn btn-warning mx-3' onClick={() => { setShowRequirement(!show_requirement) }}> {!show_requirement ? "Change Input" : "Hide Prompt"}</button>
+      <button className='btn btn-warning mx-3' onClick={() => { setShowRequirement(!show_requirement) }}> {!show_requirement ? "Change Requirements" : "Hide Prompt"}</button>
       <br />
       {show_input && <InputForm />}
       <br />
