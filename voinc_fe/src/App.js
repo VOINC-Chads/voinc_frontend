@@ -35,15 +35,28 @@ function App() {
   const [show_requirement, setShowRequirement] = useState(false);
   const [show_input, setShowInput] = useState(false);
   const [show_terminal, setShowTerminal] = useState(false);
-  const [terminalLineData, setTerminalLineData] = useState(['Waiting for code to be executed...'])
-  
+  const [terminalLineData, setTerminalLineData] = useState(['Waiting for middleware instances to spin up... ⏲️'])
+  const [ready, setReady] = useState(false)
+
   websocket.onmessage = function (event) {
     const msg = JSON.parse(event.data)
     if (msg.status === "ERROR") {
       toast.error(msg.content)
     } else if (msg.status === "BRUH"){
       setTerminalLineData([...terminalLineData, msg.content])
-    }else{
+    } else if (msg.status === "READY"){
+      setReady(true)
+      setTerminalLineData([...terminalLineData, msg.content, 'Waiting for code...'])
+      toast((t) => (
+        <span>
+          Instances are <b>ready</b> for code
+          <button onClick={() => toast.dismiss(t.id)}>
+            Dismiss
+          </button>
+        </span>
+      ));
+    } 
+    else{
       toast.success(msg.content)
 
     }
@@ -179,7 +192,7 @@ function App() {
 
       </div>
       <div className='d-flex justify-content-center p-4 aligned-self-center'>
-        <button className='btn btn-success px-5 py-2' onClick={runCode}>SEND CODE TO PROCESS</button>
+        <button disabled={!ready}  className='btn btn-success px-5 py-2' onClick={runCode}>SEND CODE TO PROCESS</button>
       </div>
 
 

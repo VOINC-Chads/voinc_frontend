@@ -4,11 +4,18 @@ import toast, { Toaster } from 'react-hot-toast';
 import { websocket, send_backend } from './websocket'
 
 
-
 export default function InputForm() {
+    websocket.onmessage = function (event) {
+        const msg = JSON.parse(event.data)
+        if (msg.status === "RECEIVED") {
+            setReady(true)
+        }
+    }
+
     var inputStarter = `[1, 2]`
 
     const [input, setInput] = useState(inputStarter); // [1,[2,3],[342]]
+    const [ready, setReady] = useState(false)
     const runCode = async () => {
 
         var job = {
@@ -28,9 +35,10 @@ export default function InputForm() {
     };
     return (
         <div className='container d-flex justify-content-center p-5'>
+            <Toaster/>
             <h3 className='d-flex text-muted font-monospace justify-content-center mt-5 mb-3 aligned-content-center px-5'>INPUT</h3>
 
-            
+
             <AceEditor
                 mode="python"
                 theme="monokai"
@@ -53,7 +61,7 @@ export default function InputForm() {
                 }}
                 className='mr-2'
             />
-            <button className='btn btn-success p-5' onClick={runCode}>RUN WITH INPUT</button>
+            <button disabled={!ready} className='btn btn-success p-5' onClick={runCode}>RUN WITH INPUT</button>
 
         </div>
     )
