@@ -8,14 +8,21 @@ export default function Navbar() {
                     <div className="row">
                         <div className="col-sm-8 col-md-7 py-4">
                             <h4 className="text-white">About</h4>
-                            <p className="text-muted">Add some information about the album below, the author, or any other background context. Make it a few sentences long so folks can pick up some informative tidbits. Then, link them off to some social networking sites or contact information.</p>
+                            <p className="text-light">
+                                This frontend ui is part of a final project for CS4287 - Cloud Computing and CS6381 - Distributed System taught
+                                at Vanderbilt Univeristy. This UI allows user to create process and execute code to be executed by a distributed
+                                system with requirements. The frontend will connect with the Go backend to handle construction of Terraform images
+                                and deployment of the distributed system. The backend will then connect with the distributed system to execute the provided
+                                inputs.
+                            </p>
                         </div>
                         <div className="col-sm-4 offset-md-1 py-4">
-                            <h4 className="text-white">Contact</h4>
+                            <h4 className="text-white">Team Members</h4>
                             <ul className="list-unstyled">
-                                <li><a href="#" className="text-white">Follow on Twitter</a></li>
-                                <li><a href="#" className="text-white">Like on Facebook</a></li>
-                                <li><a href="#" className="text-white">Email me</a></li>
+                                <li><a href="https://www.linkedin.com/in/du-duong/"  target="_blank" and rel="noopener noreferrer" className="text-white">Du Duong</a></li>
+                                <li><a href="https://www.linkedin.com/in/nathan-hunsberger/" target="_blank" and rel="noopener noreferrer" className="text-white">Nate Hunsberger</a></li>
+                                <li><a href="https://www.linkedin.com/in/berkelunstad/" target="_blank" and rel="noopener noreferrer" className="text-white">Berke Lunstad</a></li>
+                                <li><a href="https://www.linkedin.com/in/shivam-vohra" target="_blank" and rel="noopener noreferrer" className="text-white">Shivam Vohra</a></li>
                             </ul>
                         </div>
                     </div>
@@ -23,9 +30,9 @@ export default function Navbar() {
             </div>
             <div className="navbar navbar-dark bg-dark box-shadow">
                 <div class="container d-flex justify-content-between">
-                    <a href="#" class="navbar-brand d-flex align-items-center">
+                    <a href="/" class="navbar-brand d-flex align-items-center">
                         <strong className='pr-3'>Code Editor</strong>
-                        <i className="fas fa-pen"></i> 
+                        <i className="fas fa-pen"></i>
 
                     </a>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="true" aria-label="Toggle navigation">

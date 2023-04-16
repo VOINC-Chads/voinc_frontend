@@ -20,6 +20,9 @@ export default function InputForm() {
             "job": job
         }))
         toast('Input sent to be executed 🔄')
+        toast('Please do not refresh')
+        toast('Output will be stored in terminal 📝')
+
         console.log(input)
 
     };
@@ -31,7 +34,7 @@ export default function InputForm() {
             <AceEditor
                 mode="python"
                 theme="monokai"
-                //value={inputStarter}
+                value={input}
                 onChange={(value) => setInput(value)}
                 name="editor"
                 editorProps={{ $blockScrolling: true }}
