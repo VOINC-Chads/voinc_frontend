@@ -7,9 +7,10 @@ import { websocket, send_backend } from './websocket'
 export default function InputForm() {
     websocket.onmessage = function (event) {
         const msg = JSON.parse(event.data)
-        if (msg.status === "RECEIVED") {
+        if (msg.status === "RECEIVED" || msg.status === "COMPLETE") {
             setReady(true)
         }
+
     }
 
     var inputStarter = `[1, 2]`
@@ -21,7 +22,7 @@ export default function InputForm() {
         var job = {
             "jobs": JSON.parse(input).map(item => item.toString())
         }
-
+        setReady(false)
         send_backend(JSON.stringify({
             "type": 1,
             "job": job

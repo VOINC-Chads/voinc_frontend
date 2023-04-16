@@ -42,7 +42,7 @@ function App() {
     const msg = JSON.parse(event.data)
     if (msg.status === "ERROR") {
       toast.error(msg.content)
-    } else if (msg.status === "BRUH"){
+    } else if (msg.status === "BRUH" || msg.status === "COMPLETE") {
       setTerminalLineData([...terminalLineData, msg.content])
     } else if (msg.status === "READY"){
       setReady(true)
