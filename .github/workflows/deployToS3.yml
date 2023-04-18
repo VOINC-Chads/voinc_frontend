@@ -19,7 +19,7 @@ jobs:
         node-version: '14.x'
 
     - name: Install dependencies
-      run: npm install ./voinc_fe
+      run: npm --prefix ./voinc_fe install ./voinc_fe 
 
     - name: Build
       run: npm run build --prefix ./voinc_fe
