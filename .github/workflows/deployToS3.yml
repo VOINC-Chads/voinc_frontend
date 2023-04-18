@@ -17,15 +17,12 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: '14.x'
-        
-    - name: Go to voinc_fe directory
-      run: cd voinc_fe
 
     - name: Install dependencies
-      run: npm install
+      run: npm install ./voinc_fe
 
     - name: Build
-      run: npm run build
+      run: npm run build --prefix ./voinc_fe
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
@@ -38,6 +35,6 @@ jobs:
       uses: jakejarvis/s3-sync-action@master
       with:
         args: --acl public-read --delete
-        source_dir: ./build/
+        source_dir: ./voinc_fe/build/
         destination_dir: s3://voinc-fe
 
