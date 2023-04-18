@@ -17,13 +17,14 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: '14.x'
+        
+    - name: Go to voinc_fe directory
+      run: cd voinc_fe
 
     - name: Install dependencies
-      run: cd voinc_fe
       run: npm install
 
     - name: Build
-      run: cd voinc_fe
       run: npm run build
 
     - name: Configure AWS credentials
