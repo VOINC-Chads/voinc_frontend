@@ -13,6 +13,7 @@ import Terminal, { ColorMode, TerminalOutput } from 'react-terminal-ui';
 // import websocket 
 import { websocket, send_backend } from './websocket'
 import InputForm from './InputForm';
+import ColoredCircle from './ColoredCircle';
 
 
 
@@ -35,18 +36,29 @@ function App() {
   const [show_requirement, setShowRequirement] = useState(false);
   const [show_input, setShowInput] = useState(false);
   const [show_terminal, setShowTerminal] = useState(false);
+  const [backendColor, setBackendColor] = useState('red')
+  const [backendStatus, setBackendStatus] = useState('DOWN')
   const [terminalLineData, setTerminalLineData] = useState(['Waiting for middleware instances to spin up... ⏲️'])
+  const [numJob, setNumJob] = useState(0)
+  const [numWorker, setNumWorker] = useState(0)
+
   const [ready, setReady] = useState(false)
+
   const [ip, setIp] = useState('10.0.0.1:2818')
 
-  
+  websocket.onopen = function (event) {
+    toast.success("Connected to backend")
+    setBackendColor('lightGreen')
+    setBackendStatus('UP')
+  };
+
   websocket.onmessage = function (event) {
     const msg = JSON.parse(event.data)
     if (msg.status === "ERROR") {
       toast.error(msg.content)
     } else if (msg.status === "BRUH" || msg.status === "COMPLETE") {
       setTerminalLineData([...terminalLineData, msg.content])
-    } else if (msg.status === "READY"){
+    } else if (msg.status === "READY") {
       setReady(true)
       setTerminalLineData([...terminalLineData, msg.content, 'Waiting for code...'])
       toast((t) => (
@@ -57,10 +69,14 @@ function App() {
           </button>
         </span>
       ));
-    } else if (msg.status === "IP"){
+    } else if (msg.status === "IP") {
       setIp(msg.content)
+      toast.success("IP address received")
+    } else if (msg.status === "BACKEND_READY") {
+      setBackendColor('lightGreen')
+      toast.success("Backend is ready")
     }
-    else{
+    else {
       toast.success(msg.content)
 
     }
@@ -89,14 +105,37 @@ function App() {
         position="bottom-left"
         reverseOrder={false}
       />
-      <h1 className='d-flex display-3 text-dark font-monospace justify-content-center mt-3 mb-3 aligned-content-center'>VOINC EDITOR</h1>
-      <h3 className='d-flex text-dark font-monospace justify-content-center mb-3 aligned-content-center'>IP: <span className='mx-2 text-muted '>{ip}</span></h3>
+      <div className='d-flex justify-content-between'>
+        <div className=' p-5 aligned-content-center'>
+          <h1 className='d-flex display-2 text-dark font-monospace '>VOINC EDITOR </h1>
+          <h3 className='text-dark  p-2 font-monospace justify-content-center'> IP: <span className='mx-2 text-muted '>{ip}</span></h3>
 
-      <button className='btn btn-primary p-2' onClick={() => { setShowInput(!show_input) }}> {!show_input ? "Change Input" : "Hide Input"}</button>
-      <button className='btn btn-warning mx-3 p-2' onClick={() => { setShowRequirement(!show_requirement) }}> {!show_requirement ? "Change Requirements" : "Hide Requirements"}</button>
-      <button className='btn btn-success p-2' onClick={() => { setShowTerminal(!show_terminal) }}> {!show_terminal ? "Show Terminal" : "Hide Terminal"}</button>
+        </div>
+        <div className='d-flex p-5 aligned-content-center'>          {/**Card for display backend status, number of workers and number of jobs on the right side absolute position */}
 
-      <br/>
+          <div className='card' style={{ width: '18rem' }}>
+            <h5 class="card-header">Backend Info</h5>
+
+            <div className='card-body' style={{ borderColor: "black" }}>
+              {/** List containing number of workers and number of jobs */}
+              <h6 className='card-text  text-muted'>Status: <span className=' text-dark font-weight-bold'>{backendStatus}</span> {<ColoredCircle color={backendColor} />}</h6>
+              <h6 className='card-text  text-muted'>Number of workers: <span className='text-dark font-weight-bold'>{numWorker}</span></h6>
+              <h6 className='card-text  text-muted'>Jobs left in queue: <span className='text-dark font-weight-bold'>{numJob}</span></h6>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+      <div className='d-flex justify-content-center'>
+        <button className='btn btn-primary px-3 py-2' onClick={() => { setShowInput(!show_input) }}> {!show_input ? "Change Input" : "Hide Input"}</button>
+        <button className='btn btn-warning mx-3 p-3 py-2' onClick={() => { setShowRequirement(!show_requirement) }}> {!show_requirement ? "Change Requirements" : "Hide Requirements"}</button>
+        <button className='btn btn-success px-3 py-2' onClick={() => { setShowTerminal(!show_terminal) }}> {!show_terminal ? "Show Terminal" : "Hide Terminal"}</button>
+      </div>
+
+
+
+      <br />
       {/* <button className='btn btn-danger my-3' onClick={() => {setTerminalLineData([...terminalLineData, "clicked"])}}>Run Code</button> */}
       {/* <br /> */}
       {show_input && <InputForm />}
@@ -198,7 +237,7 @@ function App() {
 
       </div>
       <div className='d-flex justify-content-center py-3 aligned-self-center'>
-        <button disabled={!ready}  className='btn btn-success btn-block px-5 py-3' onClick={runCode}>SEND CODE TO PROCESS</button>
+        <button disabled={!ready} className='btn btn-success btn-block px-5 py-3' onClick={runCode}>SEND CODE TO PROCESS</button>
       </div>
 
 
