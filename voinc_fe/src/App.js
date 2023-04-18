@@ -41,6 +41,8 @@ function App() {
   const [terminalLineData, setTerminalLineData] = useState(['Waiting for middleware instances to spin up... ⏲️'])
   const [numJob, setNumJob] = useState(0)
   const [numWorker, setNumWorker] = useState(0)
+  console.log(setNumJob)
+  console.log(setNumWorker)
 
   const [ready, setReady] = useState(false)
 
