@@ -37,7 +37,9 @@ function App() {
   const [show_terminal, setShowTerminal] = useState(false);
   const [terminalLineData, setTerminalLineData] = useState(['Waiting for middleware instances to spin up... ⏲️'])
   const [ready, setReady] = useState(false)
+  const [ip, setIp] = useState('10.0.0.1:2818')
 
+  
   websocket.onmessage = function (event) {
     const msg = JSON.parse(event.data)
     if (msg.status === "ERROR") {
@@ -55,7 +57,9 @@ function App() {
           </button>
         </span>
       ));
-    } 
+    } else if (msg.status === "IP"){
+      setIp(msg.content)
+    }
     else{
       toast.success(msg.content)
 
@@ -85,7 +89,9 @@ function App() {
         position="bottom-left"
         reverseOrder={false}
       />
-      <h1 className='d-flex text-dark font-monospace justify-content-center mt-5 mb-3 aligned-content-center'>VOINC EDITOR</h1>
+      <h1 className='d-flex display-3 text-dark font-monospace justify-content-center mt-3 mb-3 aligned-content-center'>VOINC EDITOR</h1>
+      <h3 className='d-flex text-dark font-monospace justify-content-center mb-3 aligned-content-center'>IP: <span className='mx-2 text-muted '>{ip}</span></h3>
+
       <button className='btn btn-primary p-2' onClick={() => { setShowInput(!show_input) }}> {!show_input ? "Change Input" : "Hide Input"}</button>
       <button className='btn btn-warning mx-3 p-2' onClick={() => { setShowRequirement(!show_requirement) }}> {!show_requirement ? "Change Requirements" : "Hide Requirements"}</button>
       <button className='btn btn-success p-2' onClick={() => { setShowTerminal(!show_terminal) }}> {!show_terminal ? "Show Terminal" : "Hide Terminal"}</button>
@@ -191,8 +197,8 @@ function App() {
         />
 
       </div>
-      <div className='d-flex justify-content-center p-4 aligned-self-center'>
-        <button disabled={!ready}  className='btn btn-success px-5 py-2' onClick={runCode}>SEND CODE TO PROCESS</button>
+      <div className='d-flex justify-content-center py-3 aligned-self-center'>
+        <button disabled={!ready}  className='btn btn-success btn-block px-5 py-3' onClick={runCode}>SEND CODE TO PROCESS</button>
       </div>
 
 
