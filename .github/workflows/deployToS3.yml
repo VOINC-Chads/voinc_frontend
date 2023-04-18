@@ -19,9 +19,11 @@ jobs:
         node-version: '14.x'
 
     - name: Install dependencies
+      run: cd voinc_fe
       run: npm install
 
     - name: Build
+      run: cd voinc_fe
       run: npm run build
 
     - name: Configure AWS credentials
