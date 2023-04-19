@@ -6,12 +6,7 @@ import { websocket, send_backend } from './websocket'
 
 
 export default function InputForm() {
-    var inputStarter = `Flask==1.1.2
-    jinja2==2.11.2
-    markupsafe==1.1.1
-    itsdangerous==1.1.0
-    Werkzeug==1.0.1
-    Flask-Cors==3.0.10
+    var inputStarter = `numpy==1.24.2
     `
 
     const [input, setInput] = useState(inputStarter); // [1,[2,3],[342]]

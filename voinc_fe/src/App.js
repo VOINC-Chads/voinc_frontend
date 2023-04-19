@@ -41,28 +41,38 @@ function App() {
   const [terminalLineData, setTerminalLineData] = useState(['Waiting for middleware instances to spin up... ⏲️'])
   const [numJob, setNumJob] = useState(0)
   const [numWorker, setNumWorker] = useState(0)
-  console.log(setNumJob)
-  console.log(setNumWorker)
+  // console.log(setNumJob)
+  // console.log(setNumWorker)
 
   const [ready, setReady] = useState(false)
 
-  const [ip, setIp] = useState('10.0.0.1:2818')
+  const [ip, setIp] = useState('')
 
   websocket.onopen = function (event) {
-    toast.success("Connected to backend")
-    setBackendColor('lightGreen')
-    setBackendStatus('UP')
+    setBackendColor('red')
+    setBackendStatus('CONNECTING')
   };
 
   websocket.onmessage = function (event) {
     const msg = JSON.parse(event.data)
     if (msg.status === "ERROR") {
       toast.error(msg.content)
+      setTerminalLineData([...terminalLineData, msg.content])
     } else if (msg.status === "BRUH" || msg.status === "COMPLETE") {
       setTerminalLineData([...terminalLineData, msg.content])
-    } else if (msg.status === "READY") {
+    } else if (msg.status === "UPDATE") {
       setReady(true)
-      setTerminalLineData([...terminalLineData, msg.content, 'Waiting for code...'])
+      setTerminalLineData([...terminalLineData, msg.content])
+      var content = JSON.parse(msg.content);
+      if (content.hasOwnProperty('ip')){
+        setIp(content['ip'])
+      }
+      if (content.hasOwnProperty('num_jobs')){
+        setNumJob(content['num_jobs'])
+      }
+      if (content.hasOwnProperty('num_workers')){
+        setNumWorker(content['num_workers'])
+      }
       toast((t) => (
         <span>
           Instances are <b>ready</b> for code
@@ -76,6 +86,7 @@ function App() {
       toast.success("IP address received")
     } else if (msg.status === "BACKEND_READY") {
       setBackendColor('lightGreen')
+      setBackendStatus('READY')
       toast.success("Backend is ready")
     }
     else {

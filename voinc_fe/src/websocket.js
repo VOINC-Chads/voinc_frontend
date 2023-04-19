@@ -14,4 +14,3 @@ websocket.addEventListener('message', event => {
     console.log("Received message:", data);
     toast(data.content);
   });
-  
