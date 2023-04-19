@@ -36,8 +36,20 @@ export default function InputForm() {
     };
     return (
         <div className='container d-flex justify-content-center p-5'>
-            <Toaster/>
-            <h3 className='d-flex text-muted font-monospace justify-content-center mt-5 mb-3 aligned-content-center px-5'>INPUT</h3>
+            <Toaster />
+            <div className='p-3'>
+                <h3 className=' text-muted font-monospace justify-content-center mt-5 mb-3 aligned-content-center px-5'>INPUT</h3>
+                <div class="input-group mb-3">
+                    <select class="custom-select" id="inputGroupSelect01">
+                        <option selected>Number of worker(s)</option>
+                        <option value="1">One</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                    </select>
+                </div>
+            </div>
+
+
 
 
             <AceEditor
