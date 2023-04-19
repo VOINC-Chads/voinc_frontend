@@ -36,7 +36,8 @@ export default function InputForm() {
     };
     return (
         <div className='container d-flex justify-content-center p-5'>
-            <Toaster />
+            <Toaster position="bottom-left"
+                reverseOrder={false} />
             <div className='p-3'>
                 <h3 className=' text-muted font-monospace justify-content-center mt-5 mb-3 aligned-content-center px-5'>INPUT</h3>
                 <div class="input-group mb-3">
