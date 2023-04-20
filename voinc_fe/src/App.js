@@ -38,6 +38,7 @@ function App() {
   const [backendStatus, setBackendStatus] = useState('CONNECTING')
   const [terminalLineData, setTerminalLineData] = useState(['Waiting for middleware instances to spin up... ⏲️'])
   const [numJob, setNumJob] = useState(0)
+<<<<<<< HEAD
   const [numWorker, setNumWorker] = useState(1)
  
 
@@ -47,6 +48,19 @@ function App() {
   console.log(setNumJob)
   console.log(setNumWorker)
   console.log(setIp)
+=======
+  const [numWorker, setNumWorker] = useState(0)
+  // related to number of worker
+  const [selectedOption, setSelectedOption] = useState("3")
+  const [workerOptions, setWorkerOptions] = useState([0,1,2,3,4,5,6])
+  const [workerChangeReady, setWorkerChangeReady] = useState(false) // prevent user from spamming worker changes
+  // console.log(setNumJob)
+  // console.log(setNumWorker)
+
+  const [ready, setReady] = useState(false)
+
+  const [ip, setIp] = useState('8.8.8.8')
+>>>>>>> 413dd27fc3ebef3120cee50ea089f75f9a6c7d24
 
   websocket.onopen = function (event) {
     setBackendColor('red')
@@ -68,9 +82,10 @@ function App() {
       setNumWorker(1)
       setTerminalLineData([...terminalLineData, msg.content])
       var content = JSON.parse(msg.content);
-      if (content.hasOwnProperty('ip')){
+      if (content.hasOwnProperty('ip')) {
         setIp(content['ip'])
       }
+<<<<<<< HEAD
       // if (content.hasOwnProperty('num_jobs')){
       //   setNumJob(content['num_jobs'])
       // }
@@ -90,6 +105,33 @@ function App() {
         setTerminalLineData([...terminalLineData, resultString])
         
       }
+=======
+      if (content.hasOwnProperty('num_jobs')) {
+        setNumJob(content['num_jobs'])
+      }
+      if (content.hasOwnProperty('num_workers')) {
+        setNumWorker(content['num_workers'])
+      }
+      toast((t) => (
+        <span>
+          Instances are <b>ready</b> for code
+          <button onClick={() => toast.dismiss(t.id)}>
+            Dismiss
+          </button>
+        </span>
+      ));
+    } else if (msg.status === "IP") {
+      setIp(msg.content)
+      toast.success("IP address received")
+    } else if (msg.status === "BACKEND_READY") {
+      setBackendColor('lightGreen')
+      setBackendStatus('READY')
+      toast.success("Backend is ready")
+    } else if (msg.status === "CHANGE_NUM_WORKER"){
+      setWorkerOptions(msg.content)
+    } else if (msg.status === "READY_NUM_WORKER"){
+      setWorkerChangeReady(false)
+>>>>>>> 413dd27fc3ebef3120cee50ea089f75f9a6c7d24
     }
     else {
       toast.success(msg.content)
@@ -112,6 +154,20 @@ function App() {
     toast('Code sent to backend for processing ✈️')
 
   };
+  const handleOptionChange = (e) =>{
+    setSelectedOption(e.target.value)
+  }
+  const handleWorkerChoice = () =>{
+    toast(`Backend spinning up ${selectedOption} worker(s) ⏲️`)
+    toast(`Please wait for response before changing 🔄`)
+
+    setWorkerChangeReady(true)
+
+    send_backend(JSON.stringify({
+      "type": 2,
+      "num_worker": selectedOption
+    }))
+  }
 
   return (
     <div className="container vh-100">
@@ -132,11 +188,22 @@ function App() {
 
             <div className='card-body' style={{ borderColor: "black" }}>
               {/** List containing number of workers and number of jobs */}
-              <h6 className='card-text  text-muted'>Status: <span className=' text-dark font-weight-bold'>{backendStatus}</span> {<ColoredCircle color={backendColor} />}</h6>
-              <h6 className='card-text  text-muted'>Number of workers: <span className='text-dark font-weight-bold'>{numWorker}</span></h6>
-              <h6 className='card-text  text-muted'>Jobs left in queue: <span className='text-dark font-weight-bold'>{numJob}</span></h6>
+              <h6 className='card-text py-1 text-muted'>Status: <span className=' text-dark font-weight-bold'>{backendStatus}</span> {<ColoredCircle color={backendColor} />}</h6>
+              <h6 className='card-text py-1 text-muted'>Number of workers: <span className='text-dark font-weight-bold'>{numWorker}</span></h6>
+              <h6 className='card-text py-1 text-muted mb-2'>Jobs left in queue: <span className='text-dark font-weight-bold'>{numJob}</span></h6>
+              <div class="input-group">
+                <select class="custom-select" id="inputGroupSelect04" defaultValue={3} onChange={handleOptionChange}>
+                  {workerOptions.map((option) => {
+                    return <option value={option}>Workers: {option}</option>
+                  })}
+                </select>
+                <div class="input-group-append">
+                  <button class="btn btn-danger btn-outline-info" type="button" disabled={workerChangeReady} onClick={handleWorkerChoice}>Change</button>
+                </div>
+              </div>
             </div>
           </div>
+
         </div>
 
 

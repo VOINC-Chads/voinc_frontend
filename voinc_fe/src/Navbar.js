@@ -9,7 +9,7 @@ export default function Navbar() {
                         <div className="col-sm-8 col-md-7 py-4">
                             <h4 className="text-white">About</h4>
                             <p className="text-light">
-                                This frontend ui is part of a final project for CS4287 - Cloud Computing and CS6381 - Distributed System taught
+                                This frontend UI is part of a final project for CS4287 - Cloud Computing and CS6381 - Distributed System taught
                                 at Vanderbilt Univeristy. This UI allows user to create process and execute code to be executed by a distributed
                                 system with requirements. The frontend will connect with the Go backend to handle construction of Terraform images
                                 and deployment of the distributed system. The backend will then connect with the distributed system to execute the provided
