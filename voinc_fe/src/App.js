@@ -38,10 +38,10 @@ function App() {
   const [backendStatus, setBackendStatus] = useState('CONNECTING')
   const [terminalLineData, setTerminalLineData] = useState(['Waiting for middleware instances to spin up... ⏲️'])
   const [numJob, setNumJob] = useState(0)
-  
+
   const [numWorker, setNumWorker] = useState(1)
   // related to number of worker
-  const [selectedOption, setSelectedOption] = useState("3")
+  const [selectedOption, setSelectedOption] = useState("1")
   const [workerOptions, setWorkerOptions] = useState([0,1,2,3,4,5,6])
   const [workerChangeReady, setWorkerChangeReady] = useState(false) // prevent user from spamming worker changes
   console.log(setNumJob)
