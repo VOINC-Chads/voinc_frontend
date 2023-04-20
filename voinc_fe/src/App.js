@@ -38,29 +38,20 @@ function App() {
   const [backendStatus, setBackendStatus] = useState('CONNECTING')
   const [terminalLineData, setTerminalLineData] = useState(['Waiting for middleware instances to spin up... ⏲️'])
   const [numJob, setNumJob] = useState(0)
-<<<<<<< HEAD
+  
   const [numWorker, setNumWorker] = useState(1)
- 
-
-  const [ready, setReady] = useState(false)
-
-  const [ip, setIp] = useState('')
-  console.log(setNumJob)
-  console.log(setNumWorker)
-  console.log(setIp)
-=======
-  const [numWorker, setNumWorker] = useState(0)
   // related to number of worker
   const [selectedOption, setSelectedOption] = useState("3")
   const [workerOptions, setWorkerOptions] = useState([0,1,2,3,4,5,6])
   const [workerChangeReady, setWorkerChangeReady] = useState(false) // prevent user from spamming worker changes
-  // console.log(setNumJob)
-  // console.log(setNumWorker)
+  console.log(setNumJob)
+  console.log(setNumWorker)
+  console.log(setWorkerOptions)
 
   const [ready, setReady] = useState(false)
 
-  const [ip, setIp] = useState('8.8.8.8')
->>>>>>> 413dd27fc3ebef3120cee50ea089f75f9a6c7d24
+  const [ip, setIp] = useState('')
+
 
   websocket.onopen = function (event) {
     setBackendColor('red')
@@ -85,13 +76,12 @@ function App() {
       if (content.hasOwnProperty('ip')) {
         setIp(content['ip'])
       }
-<<<<<<< HEAD
-      // if (content.hasOwnProperty('num_jobs')){
-      //   setNumJob(content['num_jobs'])
-      // }
-      // if (content.hasOwnProperty('num_workers')){
-      //   setNumWorker(content['num_workers'])
-      // }
+      if (content.hasOwnProperty('num_jobs')){
+        setNumJob(content['num_jobs'])
+      }
+      if (content.hasOwnProperty('num_workers')){
+        setNumWorker(content['num_workers'])
+      }
       toast.success(msg.content);
     } else if (msg.status === "COMPLETE") {
       var contentJob = JSON.parse(msg.content);
@@ -105,37 +95,13 @@ function App() {
         setTerminalLineData([...terminalLineData, resultString])
         
       }
-=======
-      if (content.hasOwnProperty('num_jobs')) {
-        setNumJob(content['num_jobs'])
-      }
-      if (content.hasOwnProperty('num_workers')) {
-        setNumWorker(content['num_workers'])
-      }
-      toast((t) => (
-        <span>
-          Instances are <b>ready</b> for code
-          <button onClick={() => toast.dismiss(t.id)}>
-            Dismiss
-          </button>
-        </span>
-      ));
-    } else if (msg.status === "IP") {
-      setIp(msg.content)
-      toast.success("IP address received")
-    } else if (msg.status === "BACKEND_READY") {
-      setBackendColor('lightGreen')
-      setBackendStatus('READY')
-      toast.success("Backend is ready")
     } else if (msg.status === "CHANGE_NUM_WORKER"){
       setWorkerOptions(msg.content)
     } else if (msg.status === "READY_NUM_WORKER"){
-      setWorkerChangeReady(false)
->>>>>>> 413dd27fc3ebef3120cee50ea089f75f9a6c7d24
+      setWorkerChangeReady(true)
     }
     else {
       toast.success(msg.content)
-
     }
   });
 
