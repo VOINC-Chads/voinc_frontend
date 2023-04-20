@@ -6,8 +6,7 @@ import { websocket, send_backend } from './websocket'
 
 
 export default function InputForm() {
-    var inputStarter = `numpy==1.24.2
-    `
+    var inputStarter = `numpy==1.24.2`
 
     const [input, setInput] = useState(inputStarter); // [1,[2,3],[342]]
     const runCode = async () => {

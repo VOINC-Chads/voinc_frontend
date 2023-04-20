@@ -20,15 +20,13 @@ import ColoredCircle from './ColoredCircle';
 function App() {
   var starter = `def process_function(data):
   # enter function here
-  for i in data:
-    process_to_inter(i)`
+  return [execute_function(int(data))]`
 
-  var executeStarter = `def execute_function(intermediate):
+  var executeStarter = `def execute_function(data):
   # enter execute function here
-  for key, value in intermediate.items():
-    execute_to_final(key, value)
+  return data * 2
   `
-  var requirementStarter = `Flask==1.1.2\njinja2==2.11.2\nmarkupsafe==1.1.1\nitsdangerous==1.1.0\nWerkzeug==1.0.1\nFlask-Cors==3.0.10`
+  var requirementStarter = ``
 
   const [requiremnent, setRequirement] = useState(requirementStarter)
   const [processCode, setProcessCode] = useState(starter);
@@ -37,63 +35,67 @@ function App() {
   const [show_input, setShowInput] = useState(false);
   const [show_terminal, setShowTerminal] = useState(false);
   const [backendColor, setBackendColor] = useState('red')
-  const [backendStatus, setBackendStatus] = useState('DOWN')
+  const [backendStatus, setBackendStatus] = useState('CONNECTING')
   const [terminalLineData, setTerminalLineData] = useState(['Waiting for middleware instances to spin up... ⏲️'])
   const [numJob, setNumJob] = useState(0)
-  const [numWorker, setNumWorker] = useState(0)
-  // console.log(setNumJob)
-  // console.log(setNumWorker)
+  const [numWorker, setNumWorker] = useState(1)
+ 
 
   const [ready, setReady] = useState(false)
 
   const [ip, setIp] = useState('')
+  console.log(setNumJob)
+  console.log(setNumWorker)
+  console.log(setIp)
 
   websocket.onopen = function (event) {
     setBackendColor('red')
     setBackendStatus('CONNECTING')
   };
 
-  websocket.onmessage = function (event) {
+  websocket.addEventListener('message', event => {
     const msg = JSON.parse(event.data)
+    console.log(msg)
     if (msg.status === "ERROR") {
       toast.error(msg.content)
       setTerminalLineData([...terminalLineData, msg.content])
-    } else if (msg.status === "BRUH" || msg.status === "COMPLETE") {
+    } else if (msg.status === "BRUH") {
       setTerminalLineData([...terminalLineData, msg.content])
     } else if (msg.status === "UPDATE") {
       setReady(true)
+      setBackendColor('green')
+      setBackendStatus('READY')
+      setNumWorker(1)
       setTerminalLineData([...terminalLineData, msg.content])
       var content = JSON.parse(msg.content);
       if (content.hasOwnProperty('ip')){
         setIp(content['ip'])
       }
-      if (content.hasOwnProperty('num_jobs')){
-        setNumJob(content['num_jobs'])
+      // if (content.hasOwnProperty('num_jobs')){
+      //   setNumJob(content['num_jobs'])
+      // }
+      // if (content.hasOwnProperty('num_workers')){
+      //   setNumWorker(content['num_workers'])
+      // }
+      toast.success(msg.content);
+    } else if (msg.status === "COMPLETE") {
+      var contentJob = JSON.parse(msg.content);
+      if (contentJob.hasOwnProperty('JobResp')){
+        var jobResults = contentJob['JobResp']['results']
+        console.log(jobResults)
+        var resultString = "";
+        jobResults.forEach(element => {
+          resultString += `VALUE: ${element['value']} RESULT: ${element['result']}\n`;
+        });
+        setTerminalLineData([...terminalLineData, resultString])
+        
       }
-      if (content.hasOwnProperty('num_workers')){
-        setNumWorker(content['num_workers'])
-      }
-      toast((t) => (
-        <span>
-          Instances are <b>ready</b> for code
-          <button onClick={() => toast.dismiss(t.id)}>
-            Dismiss
-          </button>
-        </span>
-      ));
-    } else if (msg.status === "IP") {
-      setIp(msg.content)
-      toast.success("IP address received")
-    } else if (msg.status === "BACKEND_READY") {
-      setBackendColor('lightGreen')
-      setBackendStatus('READY')
-      toast.success("Backend is ready")
     }
     else {
       toast.success(msg.content)
 
     }
-  }
+  });
 
 
   const runCode = async () => {
@@ -103,7 +105,6 @@ function App() {
       "executeCode": executeCode,
       "requirements": requiremnent,
     }
-
     send_backend(JSON.stringify({
       "type": 0,
       "code": code
