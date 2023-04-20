@@ -1,5 +1,4 @@
-
-
+// AUTHOR: Nathan Hunsberger 20%, Berke Lunstad 20%, Du Duong 60%
 import React, { useState } from 'react';
 import AceEditor from 'react-ace';
 import toast, { Toaster } from 'react-hot-toast';
@@ -52,6 +51,9 @@ function App() {
 
   const [ip, setIp] = useState('')
 
+  // Make React happy
+  console.log(workerOptions)
+  console.log(workerChangeReady)
 
   websocket.onopen = function (event) {
     setBackendColor('red')
@@ -76,13 +78,15 @@ function App() {
       if (content.hasOwnProperty('ip')) {
         setIp(content['ip'])
       }
-      if (content.hasOwnProperty('num_jobs')){
-        setNumJob(content['num_jobs'])
-      }
-      if (content.hasOwnProperty('num_workers')){
-        setNumWorker(content['num_workers'])
-      }
       toast.success(msg.content);
+    } else if (msg.status === "INFO"){
+      var contentInfo = JSON.parse(msg.content);
+      if (contentInfo.hasOwnProperty('pending_jobs')){
+        setNumJob(contentInfo['pending_jobs'])
+      }
+      if (contentInfo.hasOwnProperty('total_workers')){
+        setNumWorker(contentInfo['total_workers'])
+      }
     } else if (msg.status === "COMPLETE") {
       var contentJob = JSON.parse(msg.content);
       if (contentJob.hasOwnProperty('JobResp')){
@@ -135,6 +139,9 @@ function App() {
     }))
   }
 
+  console.log(handleOptionChange)
+  console.log(handleWorkerChoice)
+
   return (
     <div className="container vh-100">
       <Toaster
@@ -157,7 +164,7 @@ function App() {
               <h6 className='card-text py-1 text-muted'>Status: <span className=' text-dark font-weight-bold'>{backendStatus}</span> {<ColoredCircle color={backendColor} />}</h6>
               <h6 className='card-text py-1 text-muted'>Number of workers: <span className='text-dark font-weight-bold'>{numWorker}</span></h6>
               <h6 className='card-text py-1 text-muted mb-2'>Jobs left in queue: <span className='text-dark font-weight-bold'>{numJob}</span></h6>
-              <div class="input-group">
+              {/* <div class="input-group">
                 <select class="custom-select" id="inputGroupSelect04" defaultValue={3} onChange={handleOptionChange}>
                   {workerOptions.map((option) => {
                     return <option value={option}>Workers: {option}</option>
@@ -166,7 +173,7 @@ function App() {
                 <div class="input-group-append">
                   <button class="btn btn-danger btn-outline-info" type="button" disabled={workerChangeReady} onClick={handleWorkerChoice}>Change</button>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
 
